@@ -8,4 +8,14 @@ firebase.initializeApp({
 
 let db = firebase.firestore();
 
-module.exports = { db };
+const getSites = async () => {
+  let list = [];
+  await db.collection('sites').get().then((querySnapshot) => {
+    querySnapshot.forEach((doc) => {
+      list.push({ id: doc.id, ...doc.data() });
+    });
+  });
+  return list;
+}
+
+module.exports = { db, getSites };

@@ -1,6 +1,5 @@
 const express = require('express');
-const firebase = require('firebase-admin');
-const { db } = require('../../utils/firebase');
+const { getSites } = require('../../utils/firebase');
 const router = express.Router();
 
 const optimizeCosts = (sites, budget) => {
@@ -35,16 +34,6 @@ const optimizeCosts = (sites, budget) => {
   }
 
   return helper([], sites, budget, 0, [], 0, 0);
-}
-
-const getSites = async () => {
-  let list = [];
-  await db.collection('sites').get().then((querySnapshot) => {
-    querySnapshot.forEach((doc) => {
-      list.push({ id: doc.id, ...doc.data() });
-    });
-  });
-  return list;
 }
 
 router.get('/', async (req, res, next) => {
