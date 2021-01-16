@@ -4,7 +4,12 @@ const firebase = require('firebase-admin');
 const axios = require('axios');
 const { db } = require('../../utils/firebase');
 const router = express.Router();
-const upload = multer();
+const upload = multer({ dest: './uploads' });
+
+// File upload fields for POST request.
+const uploadFields = [
+  { name: 'image', maxCount: 1 }
+];
 
 // Returns the placeId of the nearest road.
 const getNearestRoad = async (lat, lon) => {
@@ -61,7 +66,7 @@ const getTraffic = async (lat, lon) => {
   }
 }
 
-const uploadSiteDetails = async (lat, lon, roadDetails, traffic, damage) => {
+const uploadSiteDetails = async (lat, lon, roadDetails, traffic, damage, image) => {
 
   const getAddress = details => {
     if (!details || !details.address_components || details.address_components.length < 2) {
@@ -78,7 +83,8 @@ const uploadSiteDetails = async (lat, lon, roadDetails, traffic, damage) => {
       traffic: Math.round(traffic),
       damage: Math.round(damage),
       urgency: Math.round(traffic * damage),
-      cost: Math.round(200 * damage)
+      cost: Math.round(200 * damage),
+      image: image
     });
     return docRef.id; // The ID of the inserted element.
   } catch (err) {
@@ -86,7 +92,12 @@ const uploadSiteDetails = async (lat, lon, roadDetails, traffic, damage) => {
   }
 }
 
-router.post('/', upload.none(), async (req, res, next) => {
+router.post('/', upload.fields(uploadFields), async (req, res, next) => {
+
+  let image = null;
+  if (req.files && req.files.image && req.files.image.length >= 1) {
+    image = req.files.image[0];
+  }
 
   if (!req.body) {
     return res.status(500).json({
@@ -145,7 +156,7 @@ router.post('/', upload.none(), async (req, res, next) => {
     return res.status(400).json({ result: 'Couldn\'t get location traffic.' });
   }
 
-  let uploadDetails = await uploadSiteDetails(lat, lon, roadDetails, traffic, damage);
+  let uploadDetails = await uploadSiteDetails(lat, lon, roadDetails, traffic, damage, image ? image.filename : null);
   if (!uploadDetails) {
     return res.status(400).json({ result: 'Couldn\'t upload site.' });
   }
