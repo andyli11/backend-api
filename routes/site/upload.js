@@ -75,10 +75,10 @@ const uploadSiteDetails = async (lat, lon, roadDetails, traffic, damage) => {
     let docRef = await db.collection('sites').add({
       coordinates: new firebase.firestore.GeoPoint(lat, lon),
       address: getAddress(roadDetails),
-      traffic: traffic,
-      damage: damage,
-      urgency: traffic * damage,
-      cost: 200 * damage
+      traffic: Math.round(traffic),
+      damage: Math.round(damage),
+      urgency: Math.round(traffic * damage),
+      cost: Math.round(200 * damage)
     });
     return docRef.id; // The ID of the inserted element.
   } catch (err) {
@@ -94,7 +94,7 @@ router.post('/', upload.none(), async (req, res, next) => {
     });
   }
   if (!req.body.lon || !req.body.lat) {
-    return res.status(500).json({
+    return res.status(400).json({
       result: 'Missing latitude or longitude.'
     });
   }

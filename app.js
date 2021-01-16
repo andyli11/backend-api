@@ -6,6 +6,7 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var siteUploadRouter = require('./routes/site/upload');
+var siteOptimizeRouter = require('./routes/site/optimize');
 
 var app = express();
 
@@ -23,6 +24,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/site/upload/', siteUploadRouter);
+app.use('/site/optimize', siteOptimizeRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
