@@ -37,25 +37,32 @@ const getRoadDetails = async placeId => {
   }
 }
 
-const getNearbyPlaces = async (lat, lon) => {
+const getTraffic = async (lat, lon) => {
   try {
     let res = await axios.post(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=${process.env.API_KEY}&location=${lat},${lon}&radius=1000`)
-    if (res.status !== 200)
+    if (res.status !== 200) {
       return null;
+    }
     
-    return res.data.results.reduce((acc, val) => (acc + val.ratings), 0);
+    let traffic = res.data.results.reduce((acc, val) => {
+      let rating = val.rating ? val.rating : 0;
+      let numRatings = val.user_ratings_total ? val.user_ratings_total : 0;
+      return acc + rating + numRatings;
+    }, 1);  // Start at 1 to prevent a possibility of 0.
+    return traffic;
   
   } catch (err) {
     return null;
   }
 }
 
-const uploadSiteDetails = async (lat, lon, roadDetails) => {
+const uploadSiteDetails = async (lat, lon, roadDetails, traffic) => {
   try {
     // TODO: Strucure object in a better manner.
     let docRef = await db.collection('sites').add({
       location: new firebase.firestore.GeoPoint(lat, lon),
-      details: roadDetails
+      details: roadDetails,
+      traffic: traffic
     });
     return docRef.id; // The ID of the inserted element.
   } catch (err) {
@@ -116,12 +123,12 @@ router.post('/', upload.none(), async (req, res, next) => {
       reject([400, 'Couldn\'t get road details.']);
     }
 
-    let nearbyPlaces = await getNearbyPlaces(lat, lon);
-    if (!nearbyPlaces) {
-      reject([400, 'Couldn\'t get place details.'])
+    let traffic = await getTraffic(lat, lon);
+    if (!traffic) {
+      reject([400, 'Couldn\'t get location traffic.'])
     }
 
-    let uploadDetails = await uploadSiteDetails(lat, lon, roadDetails);
+    let uploadDetails = await uploadSiteDetails(lat, lon, roadDetails, traffic);
     if (!uploadDetails) {
       reject([400, 'Couldn\'t upload site.']);
     }
