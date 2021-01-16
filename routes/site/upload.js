@@ -2,7 +2,9 @@ const express = require('express');
 const multer = require('multer');
 const firebase = require('firebase-admin');
 const axios = require('axios');
-const { db } = require('../../utils/firebase');
+const {
+  db
+} = require('../../utils/firebase');
 const router = express.Router();
 const upload = multer();
 
@@ -17,8 +19,7 @@ const getNearestRoad = async (lat, lon) => {
       return null;
     }
     return res.data.snappedPoints[0].placeId;
-  }
-  catch (err) {
+  } catch (err) {
     return null;
   }
 }
@@ -31,8 +32,20 @@ const getRoadDetails = async placeId => {
     }
     // TODO: Check if place is a road.
     return res.data;
+  } catch (err) {
+    return null;
   }
-  catch (err) {
+}
+
+const getNearbyPlaces = async (lat, lon) => {
+  try {
+    let res = await axios.post(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=${process.env.API_KEY}&location=${lat},${lon}&radius=1000`)
+    if (res.status !== 200)
+      return null;
+
+    console.log(res.data.results[0]);
+    return res.data;
+  } catch (err) {
     return null;
   }
 }
@@ -44,36 +57,47 @@ const uploadSiteDetails = async (lat, lon, roadDetails) => {
       location: new firebase.firestore.GeoPoint(lat, lon),
       details: roadDetails
     });
-    return docRef.id;  // The ID of the inserted element.
-  }
-  catch (err) {
+    return docRef.id; // The ID of the inserted element.
+  } catch (err) {
     return null;
   }
 }
 
-/* GET home page. */
 router.post('/', upload.none(), async (req, res, next) => {
 
   if (!req.body) {
-    return res.status(500).json({ result: 'Missing req.body.' });
+    return res.status(500).json({
+      result: 'Missing req.body.'
+    });
   }
   if (!req.body.lon || !req.body.lat) {
-    return res.status(500).json({ result: 'Missing latitude or longitude.' });
+    return res.status(500).json({
+      result: 'Missing latitude or longitude.'
+    });
   }
 
-  let { lat, lon } = req.body;
+  let {
+    lat,
+    lon
+  } = req.body;
 
   lat = parseFloat(lat);
   lon = parseFloat(lon);
 
   if (isNaN(lat) || isNaN(lon)) {
-    return res.status(400).json({ result: 'Invalid latitude or longitude.' });
+    return res.status(400).json({
+      result: 'Invalid latitude or longitude.'
+    });
   }
   if (lat < -90 || lat > 90) {
-    return res.status(400).json({ result: 'Latitude out of range.' });
+    return res.status(400).json({
+      result: 'Latitude out of range.'
+    });
   }
   if (lon < -180 || lon > 180) {
-    return res.status(400).json({ result: 'Longitude out of range.' });
+    return res.status(400).json({
+      result: 'Longitude out of range.'
+    });
   }
 
   // Round to 7 decimal places.
@@ -84,17 +108,22 @@ router.post('/', upload.none(), async (req, res, next) => {
 
     let roadId = await getNearestRoad(lat, lon);
     if (!roadId) {
-      reject([ 400, 'Couldn\'t get nearest road.' ]);
+      reject([400, 'Couldn\'t get nearest road.']);
     }
 
     let roadDetails = await getRoadDetails(roadId);
     if (!roadDetails) {
-      reject([ 400, 'Couldn\'t get road details.' ]);
+      reject([400, 'Couldn\'t get road details.']);
+    }
+
+    let nearbyPlaces = await getNearbyPlaces(lat, lon);
+    if (!nearbyPlaces) {
+      reject([400, 'Couldn\'t get place details.'])
     }
 
     let uploadDetails = await uploadSiteDetails(lat, lon, roadDetails);
     if (!uploadDetails) {
-      reject([ 400, 'Couldn\'t upload site.' ]);
+      reject([400, 'Couldn\'t upload site.']);
     }
 
     resolve(uploadDetails);
@@ -102,10 +131,15 @@ router.post('/', upload.none(), async (req, res, next) => {
 
   try {
     let siteId = await promise;
-    res.status(200).json({ result: { id: siteId } });
-  }
-  catch (err) {
-    return res.status(err[0]).json({ result: err[1] });
+    res.status(200).json({
+      result: {
+        id: siteId
+      }
+    });
+  } catch (err) {
+    return res.status(err[0]).json({
+      result: err[1]
+    });
   }
 
 });
