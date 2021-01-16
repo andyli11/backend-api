@@ -42,9 +42,9 @@ const getNearbyPlaces = async (lat, lon) => {
     let res = await axios.post(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=${process.env.API_KEY}&location=${lat},${lon}&radius=1000`)
     if (res.status !== 200)
       return null;
-
-    console.log(res.data.results[0]);
-    return res.data;
+    
+    return res.data.results.reduce((acc, val) => (acc + val.ratings), 0);
+  
   } catch (err) {
     return null;
   }
