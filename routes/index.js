@@ -1,25 +1,10 @@
-var express = require('express');
-const {
-  db
-} = require('../utils/firebase');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 
 /* GET home page. */
-router.get('/', async function (req, res, next) {
-  let promise = new Promise((resolve, reject) => {
-    db.collection("test").get().then((querySnapshot) => {
-      querySnapshot.forEach((doc) => {
-        console.log(`${doc.id} => ${JSON.stringify(doc.data())}`);
-      });
-    });
-    resolve();
-  });
+router.get('/', async (req, res, next) => {
 
-  await promise.then(() => {
-    res.json({
-      response: true
-    });
-  });
+  res.json({ true: 'false' })
 
 });
 
