@@ -63,7 +63,7 @@ const getTraffic = async (lat, lon) => {
   }
 }
 
-const uploadSiteDetails = async (lat, lon, roadDetails, traffic) => {
+const uploadSiteDetails = async (lat, lon, roadDetails, traffic, damage) => {
 
   const getAddress = details => {
     if (!details || !details.address_components || details.address_components.length < 2) {
@@ -77,7 +77,10 @@ const uploadSiteDetails = async (lat, lon, roadDetails, traffic) => {
     let docRef = await db.collection('sites').add({
       coordinates: new firebase.firestore.GeoPoint(lat, lon),
       address: getAddress(roadDetails),
-      traffic: traffic
+      traffic: traffic,
+      damage: damage,
+      urgency: traffic * damage,
+      cost: 200 * damage
     });
     return docRef.id; // The ID of the inserted element.
   } catch (err) {
@@ -98,13 +101,8 @@ router.post('/', upload.none(), async (req, res, next) => {
     });
   }
 
-  let {
-    lat,
-    lon
-  } = req.body;
-
-  lat = parseFloat(lat);
-  lon = parseFloat(lon);
+  let lat = parseFloat(req.body.lat);
+  let lon = parseFloat(req.body.lon);
 
   if (isNaN(lat) || isNaN(lon)) {
     return res.status(400).json({
@@ -126,6 +124,12 @@ router.post('/', upload.none(), async (req, res, next) => {
   lat = Math.round(lat * 10000000) / 10000000;
   lon = Math.round(lon * 10000000) / 10000000;
 
+  let damage = req.body.damage ? parseInt(req.body.damage) : 1;
+  if (isNaN(damage)) {
+    damage = 1;
+  }
+  damage = Math.min(Math.max(damage, 1), 5);
+
   let promise = new Promise(async (resolve, reject) => {
 
     let roadId = await getNearestRoad(lat, lon);
@@ -143,7 +147,7 @@ router.post('/', upload.none(), async (req, res, next) => {
       reject([400, 'Couldn\'t get location traffic.'])
     }
 
-    let uploadDetails = await uploadSiteDetails(lat, lon, roadDetails, traffic);
+    let uploadDetails = await uploadSiteDetails(lat, lon, roadDetails, traffic, damage);
     if (!uploadDetails) {
       reject([400, 'Couldn\'t upload site.']);
     }
