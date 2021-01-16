@@ -36,6 +36,13 @@ const optimizeCosts = (sites, budget) => {
   return helper([], sites, budget, 0, [], 0, 0);
 }
 
+// Enable CORS.
+router.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  next();
+});
+
 router.get('/', async (req, res, next) => {
 
   if (!req.query) {

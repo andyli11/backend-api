@@ -92,6 +92,13 @@ const uploadSiteDetails = async (lat, lon, roadDetails, traffic, damage, image) 
   }
 }
 
+// Enable CORS.
+router.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  next();
+});
+
 router.post('/', upload.fields(uploadFields), async (req, res, next) => {
 
   let image = null;
