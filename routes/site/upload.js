@@ -2,9 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const firebase = require('firebase-admin');
 const axios = require('axios');
-const {
-  db
-} = require('../../utils/firebase');
+const { db } = require('../../utils/firebase');
 const router = express.Router();
 const upload = multer();
 
@@ -130,44 +128,29 @@ router.post('/', upload.none(), async (req, res, next) => {
   }
   damage = Math.min(Math.max(damage, 1), 5);
 
-  let promise = new Promise(async (resolve, reject) => {
 
-    let roadId = await getNearestRoad(lat, lon);
-    if (!roadId) {
-      reject([400, 'Couldn\'t get nearest road.']);
-    }
 
-    let roadDetails = await getRoadDetails(roadId);
-    if (!roadDetails) {
-      reject([400, 'Couldn\'t get road details.']);
-    }
-
-    let traffic = await getTraffic(lat, lon);
-    if (!traffic) {
-      reject([400, 'Couldn\'t get location traffic.'])
-    }
-
-    let uploadDetails = await uploadSiteDetails(lat, lon, roadDetails, traffic, damage);
-    if (!uploadDetails) {
-      reject([400, 'Couldn\'t upload site.']);
-    }
-
-    resolve(uploadDetails);
-  });
-
-  try {
-    let siteId = await promise;
-    res.status(200).json({
-      result: {
-        id: siteId
-      }
-    });
-  } catch (err) {
-    return res.status(err[0]).json({
-      result: err[1]
-    });
+  let roadId = await getNearestRoad(lat, lon);
+  if (!roadId) {
+    return res.status(400).json({ result: 'Couldn\'t get nearest road.' });
   }
 
+  let roadDetails = await getRoadDetails(roadId);
+  if (!roadDetails) {
+    return res.status(400).json({ result: 'Couldn\'t get road details.' });
+  }
+
+  let traffic = await getTraffic(lat, lon);
+  if (!traffic) {
+    return res.status(400).json({ result: 'Couldn\'t get location traffic.' });
+  }
+
+  let uploadDetails = await uploadSiteDetails(lat, lon, roadDetails, traffic, damage);
+  if (!uploadDetails) {
+    return res.status(400).json({ result: 'Couldn\'t upload site.' });
+  }
+
+  return res.status(200).json({ result: { id: uploadDetails } });
 });
 
 module.exports = router;
