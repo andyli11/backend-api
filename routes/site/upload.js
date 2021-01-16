@@ -30,8 +30,11 @@ const getRoadDetails = async placeId => {
     if (res.status !== 200) {
       return null;
     }
+    if (!res.data || !res.data.result) {
+      return null;
+    }
     // TODO: Check if place is a road.
-    return res.data;
+    return res.data.result;
   } catch (err) {
     return null;
   }
@@ -39,11 +42,15 @@ const getRoadDetails = async placeId => {
 
 const getTraffic = async (lat, lon) => {
   try {
-    let res = await axios.post(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=${process.env.API_KEY}&location=${lat},${lon}&radius=1000`)
+    let res = await axios.post(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=${process.env.API_KEY}&location=${lat},${lon}&radius=1000`);
     if (res.status !== 200) {
       return null;
     }
+    if (!res.data || !res.data.results) {
+      return null;
+    }
     
+    // Sums all ratings and number of ratings.
     let traffic = res.data.results.reduce((acc, val) => {
       let rating = val.rating ? val.rating : 0;
       let numRatings = val.user_ratings_total ? val.user_ratings_total : 0;
@@ -57,11 +64,19 @@ const getTraffic = async (lat, lon) => {
 }
 
 const uploadSiteDetails = async (lat, lon, roadDetails, traffic) => {
+
+  const getAddress = details => {
+    if (!details || !details.address_components || details.address_components.length < 2) {
+      return 'N/A';
+    }
+    return details.address_components[0].long_name + ' ' + details.address_components[1].long_name;
+  }
+
   try {
     // TODO: Strucure object in a better manner.
     let docRef = await db.collection('sites').add({
-      location: new firebase.firestore.GeoPoint(lat, lon),
-      details: roadDetails,
+      coordinates: new firebase.firestore.GeoPoint(lat, lon),
+      address: getAddress(roadDetails),
       traffic: traffic
     });
     return docRef.id; // The ID of the inserted element.
