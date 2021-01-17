@@ -1,6 +1,8 @@
 # Firebase key
 #utils/firebaseKey.json
 
+public/uploads/*
+
 # Logs
 logs
 *.log

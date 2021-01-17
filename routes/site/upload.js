@@ -4,7 +4,7 @@ const firebase = require('firebase-admin');
 const axios = require('axios');
 const { db } = require('../../utils/firebase');
 const router = express.Router();
-const upload = multer({ dest: './uploads' });
+const upload = multer({ dest: './public/uploads' });
 
 // File upload fields for POST request.
 const uploadFields = [
