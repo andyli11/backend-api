@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "road-repair-optimizations",
+  "private_key_id": "aa09eb68e3fea66f50e94e0074bad2720a9a4156",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDPiN35NLSuMYnj\nUReMKT1piOEp30xNPP5XkgcnP0nnKRUbnPN6/oNSfZ84USf2qY/QROURNqgnFoJG\nD4RKtIEC7izH6H+kFKu1Y62LZ2Vg3QivZn3/UexH3GHi1wJwLqAWHXiGDT06ZyTL\nHkbhk4Z8DEkpsKMIie27Idx9rSn2ITnKveVbD9mb/H9qiZ/Cur/uxiO2mnm4zmLl\nCqJERzi1kEkB1v8t2FS9vIKAKvTNNtikIlfs3tH0IERWj7PR+0ITE085QRb8Dhqk\nO4z85uaU4QBPVT1z0pAUC4X2D3xJWSmwR/nCxKeMRtWq5nDbFbMu9d9Cz6YRNHPy\nGpSPNqq3AgMBAAECggEAN2mBbykp9vrGKNo9kdBvE88W46G6E0NuW75jR5Dn8B8x\nghpxjk0Hjk55ZUWSCJO0kPTcPrDby/gAF6nL9lBkw/4JGeVTs2FLiZaQP1D/qhHK\nYF7a1IGwt205+6HSBlcEqnL6+7vsNbxVgCBY56EGvvdez5FYro55WcZMQ4gpVIyF\n7Lkg/QVfMsLf3a/ipeRHaJZAS/3hEZrQvkQxvoO6B4ppvdrZCKtizzShrz6pkL0n\nLKkCM/pomRMYjMV6PwzIS2psDoTCAzlTjUS3XsJPYXnQpBoiTznQWtUw+hUH4A2y\nbzeskmQEzPtGypUWhrqb+gsn1VQOvFirpaiHZvo4sQKBgQD9A6ZXvi5Nc6C8eMkH\nm1yQqNHecVDtQghR/oISyktbNS3VJ3tTQDjDS88kIY//i2sFwsZSu110aS+6Vy1M\ntNzIhuB9cE6J9+BkUTajUAkmzHzSw/wX/PEHqBVP+xsDCGMbbgoHd12gSWRo+6OD\n6hSHgWUIZWjSq4CfzZeZahvdUQKBgQDR+9MNoQBazU8EXjbT4/+mT5BKxJYN8gn6\n2ihTR25QT/1t8ib2Qxln2AH4EoKwn2UFb7g4LbMvqBJy/KBSwYVy9/koCxO1ebHq\n+6N9omVbt8iaRj9esOTNLgS2OKnY99j4xq8ntuLu0JhbaKq+mMjk3C6JN6AZwOYa\nqw9AO/RlhwKBgQDhCUgALqUcOkWynHOhEmwINj9D6+GgxOSFmSqz772KiAgV2CH2\nb96MxXadmkRrc+NiolSm7QM4MP5EbJlb6lmc+Wnd5+/TAudQEnPYWa1qFuLGy44C\n//SZbMRX+O2TivgrQ3okHeTmVaC7R2WuRJqx00K7bwcGqYejmsbFqvzRoQKBgDbm\nv5zNnpkfGuzKcU1fTGVAYjqaQZ1tzhwvU+HKSFZpQ5queG9kxcy31nP06wSg+Dm+\npwzRLgtkx0YXNRfOD0Uq/pLwqnuFUPZeSrW7cwLS/3kOqtzoJTpcMNEv6YCX9Lu+\nvucEUzsbgOpNaG8i5UupIeWwjISPQdpxJTCnPFQbAoGAay6c9uJsuk7gBGQQaWwC\nNjQRHUjgNbmFCne+1tcHyVhj100L+pDNwIrAf8bsa3AdSG+5htiLjFyGEESeu/kr\n9IYFi8P9CjTtyrIs5Mpy5SPTLoydfiUQwhnM353aT0UeMxw3RpimRt+ck8gV4eiX\nEeWTspk7ZERNtHchEVSjgjc=\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-hd8fa@road-repair-optimizations.iam.gserviceaccount.com",
+  "client_id": "105449700668162365774",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-hd8fa%40road-repair-optimizations.iam.gserviceaccount.com"
+}
